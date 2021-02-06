@@ -36,7 +36,7 @@ while True:
         print("Couldn't connect to one of the sites, trying again")
         sleep(3)
 
-    if "out of stock" not in resp1.text.lower() or  "out of stock" not in resp2.text.lower():
+    if resp1.text and "out of stock" not in resp1.text.lower() or if resp2.text and "out of stock" not in resp2.text.lower():
         print("IN STOCK")
         send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site1} or {site2}!")
     else:
