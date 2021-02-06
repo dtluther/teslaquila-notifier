@@ -24,8 +24,9 @@ def send_alert_message(src_number, dest_number, body):
     print(message.sid)
 
 seconds_in_day = 86400
-# using // 2 because we are sleeping at the end of this
-counter = seconds_in_day // 2 - 2
+sleep_duration = 2
+counts_in_day = seconds_in_day // sleep_duration
+counter = counts_in_day - 2
 while True:
     print(counter)
     try:
@@ -40,11 +41,11 @@ while True:
         send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site1} or {site2}!")
     else:
         print("NO LUCK YET")
-    if counter >= seconds_in_day // 2:
+    if counter >= counts_in_day:
         send_alert_message(from_number, to_number, f"Daily update text. Teslaquila notifier is working. {site1}")
         counter = 0
     
-    sleep(2)
+    sleep(sleep_duration)
     counter += 1
 
 
