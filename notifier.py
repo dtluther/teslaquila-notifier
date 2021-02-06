@@ -1,15 +1,15 @@
-from twilio.rest import Client
 from dotenv import dotenv_values
+from twilio.rest import Client
 import requests
 from time import sleep
-
-client = Client(account_sid, auth_token)
 
 config = dotenv_values("twilio.env")
 account_sid = config['TWILIO_ACCOUNT_SID']
 auth_token = config['TWILIO_AUTH_TOKEN']
 from_number = config['FROM_NUMBER']
 to_number = config['TO_NUMBER']
+
+client = Client(account_sid, auth_token)
 
 site1 = 'https://teslatequila.tesla.com/'
 site2 = 'https://shop.tesla.com/product/tesla-tequila?sku=1617866-00-A'
