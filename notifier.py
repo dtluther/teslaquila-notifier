@@ -24,7 +24,7 @@ def send_alert_message(src_number, dest_number, body):
     print(message.sid)
 
 seconds_in_day = 86400
-sleep_duration = 2
+sleep_duration = 4
 counts_in_day = seconds_in_day // sleep_duration
 counter = counts_in_day - 2
 while True:
@@ -36,13 +36,16 @@ while True:
         print("Couldn't connect to one of the sites, trying again")
         sleep(3)
 
-    if resp1.text and "out of stock" not in resp1.text.lower() or resp2.text and "out of stock" not in resp2.text.lower():
-        print("IN STOCK")
-        send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site1} or {site2}!")
+    if resp1.text and "out of stock" not in resp1.text.lower():
+        print(f"IN STOCK at {site1}")
+        send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site1}!")
+    if resp2.text and "out of stock" not in resp2.text.lower():
+        print(f"IN STOCK at {site2}")
+        send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site2}!")
     else:
         print("NO LUCK YET")
     if counter >= counts_in_day:
-        send_alert_message(from_number, to_number, f"Daily update text. Teslaquila notifier is working. {site1}")
+        send_alert_message(from_number, to_number, f"Daily update text. Teslaquila notifier is working.")
         counter = 0
     
     sleep(sleep_duration)
