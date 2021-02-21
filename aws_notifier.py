@@ -1,0 +1,58 @@
+import boto3
+from twilio.rest import Client
+import requests
+from time import sleep
+
+ssm = boto3.client('ssm', region_name='us-west-1')
+
+def decrypted_param(name):
+    param = ssm.get_parameter(Name=name, WithDecryption=True)
+    value = param['Parameter']['Value']
+    return value
+
+account_sid = decrypted_param('/twilio/TWILIO_ACCOUNT_SID')
+auth_token = decrypted_param('/twilio/TWILIO_AUTH_TOKEN')
+from_number = decrypted_param('/twilio/FROM_NUMBER')
+to_number = decrypted_param('/twilio/TO_NUMBER')
+
+client = Client(account_sid, auth_token)
+
+site1 = 'https://teslatequila.tesla.com/'
+site2 = 'https://shop.tesla.com/product/tesla-tequila?sku=1617866-00-A'
+
+def send_alert_message(src_number, dest_number, body):
+    message = client.messages \
+                    .create(
+                         body=body,
+                         from_=src_number,
+                         to=dest_number
+                     )
+    print(message.sid)
+
+seconds_in_day = 86400
+sleep_duration = 4
+counts_in_day = seconds_in_day // sleep_duration
+counter = counts_in_day - 2
+while True:
+    print(counter)
+    try:
+        resp1 = requests.get(site1)
+        resp2 = requests.get(site2)
+    except requests.ConnectionError as e:
+        print("Couldn't connect to one of the sites, trying again")
+        sleep(3)
+
+    if resp1.text and "out of stock" not in resp1.text.lower():
+        print(f"IN STOCK at {site1}")
+        send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site1}!")
+    if resp2.text and "out of stock" not in resp2.text.lower():
+        print(f"IN STOCK at {site2}")
+        send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site2}!")
+    else:
+        print("NO LUCK YET")
+    if counter >= counts_in_day:
+        send_alert_message(from_number, to_number, f"Daily update text. Teslaquila notifier is working.")
+        counter = 0
+
+    sleep(sleep_duration)
+    counter += 1
