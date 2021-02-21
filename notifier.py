@@ -51,6 +51,3 @@ while True:
     sleep(sleep_duration)
     counter += 1
 
-
-
-
