@@ -61,14 +61,16 @@ while True:
     if type(resp1) is requests.models.Response: # we'll have a response if we were allowed_on_siteX is True
         if resp1.status_code == 403:
             print('DENIED')
-            allowed_on_site2 = False
+            allowed_on_site1 = False
+            send_alert_message(from_number, to_number, f"Denied from site1: {site1}")
         elif "access denied" not in resp1.text.lower() and "out of stock" not in resp1.text.lower():
-            print(f"IN STOCK at {site2}")
+            print(f"IN STOCK at {site1}")
             send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site1}!")
     if type(resp2) is requests.models.Response:
         if resp2.status_code == 403:
             print('DENIED')
             allowed_on_site2 = False
+            send_alert_message(from_number, to_number, f"Denied from site2: {site2}")
         elif "access denied" not in resp2.text.lower() and "out of stock" not in resp2.text.lower():
             print(f"IN STOCK at {site2}")
             send_alert_message(from_number, to_number, f"Teslaquila IN STOCK! Get it now at {site2}!")
